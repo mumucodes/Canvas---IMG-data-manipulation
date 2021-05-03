@@ -17,7 +17,7 @@ window.addEventListener('mousemove', function(event){
 
 });
 
-ctx.fillStyle = 'white';
+ctx.fillStyle = 'red';
 ctx.font = '30px Verdana';
 ctx.fillText('A', 0, 30);
 const data = ctx.getImageData(0, 0, 100, 100);
@@ -38,11 +38,22 @@ class Particle{
         ctx.closePath;
         ctx.fill();
     }
+    update(){
+        let dx = mouse.x - this.x;
+        let dy = mouse.y - this.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 300){
+            this.size = 30;
+        } else {
+            this.size = 3;
+        }
+
+    }
 }
 
 function init(){
     particleArray = [];
-    for(let i = 0; i < 500; i++){
+    for(let i = 0; i < 1000; i++){
         let x = Math.random() * canvas.width;
         let y = Math.random() * canvas.height;
         particleArray.push(new Particle(x, y));
@@ -57,6 +68,7 @@ function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for(let i = 0; i < particleArray.length; i++){
         particleArray[i].draw();
+        particleArray[i].update();
     }
     requestAnimationFrame(animate);
 }
