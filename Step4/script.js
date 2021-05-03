@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let adjustX = 10;
-let adjustY = 10;
+let adjustY = 30;
 let particleArray = [];
 
 //handle mouse
@@ -19,8 +19,8 @@ window.addEventListener('mousemove', function(event){
 });
 
 ctx.fillStyle = 'red';
-ctx.font = '90px Verdana';
-ctx.fillText('M', 0, 30);
+ctx.font = '30px Verdana';
+ctx.fillText('MUMU', 0, 20);
 const textCoordinates = ctx.getImageData(0, 0, 100, 100);
 
 class Particle{
@@ -33,7 +33,7 @@ class Particle{
         this.density = (Math.random() * 40)+ 5;
         }
     draw(){
-        ctx.fillStyle = 'purple';
+        ctx.fillStyle = 'blue';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.closePath;
@@ -74,7 +74,7 @@ function init(){
             if(textCoordinates.data[(y * 4 * textCoordinates.width) + (x* 4) + 3] > 128){
                 let positionX = x + adjustX;
                 let positionY = y + adjustY;
-                particleArray.push(new Particle(positionX * 10 , positionY * 10));
+                particleArray.push(new Particle(positionX * 15 , positionY * 15));
             }
         }
     }
@@ -88,6 +88,28 @@ function animate(){
         particleArray[i].draw();
         particleArray[i].update();
     }
+    connect();
     requestAnimationFrame(animate);
 }
 animate();
+
+function connect(){
+    let opactityValue = 1;
+    for (let a = 0; a < particleArray.length; a++){
+        for(let b = a; b < particleArray.length; b++){
+            let dx = particleArray[a].x - particleArray[b].x;
+            let dy = particleArray[a].y - particleArray[b].y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 50){
+                opacityValue = 1 - (distance/50);
+                ctx.strokeStyle = 'rgba(255, 255, 255,' + opacityValue +')';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(particleArray[a].x, particleArray[a].y);
+                ctx.lineTo(particleArray[b].x, particleArray[b].y);
+                ctx.stroke();
+            }
+         }
+    }
+}
